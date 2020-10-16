@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>LIFPROJET</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>LIFPROJET</h1>
+    <h2 class="error"><%= locals.errorLog %></h2>
+    <ul>
+        <li><a href="/authentificate">Vers les fonctionalité ...</a></li>
+    </ul>
+    <% if(locals.user){ %>
+    <h3 class="success"><%= locals.successMessage %></h3>
+    <a href="/disconect"><button>Se déconecter</button></a> 
+    <% } %> 
+    <% if(!locals.user) { %>
+        
+        <div id="log">
+            <form action="/log" method="POST">
+                <h2>Se connecter</h2>
+                <label for="login">User name :</label>
+                <input type="text" name="userName" id="userName" required>
+                <label for="password">Password :</label>
+                <input type="password" name="password" id="password" required>
+                <button type="submit">Se connecter</button>
+            </form>
+        </div>
+        <h3>ou</h3>
+        <div id="register">
+            <h2>Créer un compte</h2>
+               <h2 class="error"><%= locals.errorMessage %></h2> 
+            <form action="/register" method="POST">
+                <label for="login">User name :</label>
+                <input type="text" name="userName" id="userName" required>
+                <label for="password">Password :</label>
+                <input type="password" name="password" id="password" required>
+                <button type="submit">S'enregistrer</button>
+            </form>
+        </div>
+   <% } %> 
+</body>
+</html>
