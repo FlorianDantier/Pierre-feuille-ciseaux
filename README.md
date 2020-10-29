@@ -13,4 +13,4 @@
 5. Normalement une fenêtre s'est ouverte dans votre navigateur web à l'adresse : localhost:3000
     * Si ce n'est pas le cas ouvrez la manuellement en tapant dans la barre d'adresse : localhost:3000
 
-NB: Il semble y avoir un problème pour faire fonctioner le client sous windows, je voit pour réglé cela au plus vite.
+NB: Il semble y avoir un problème pour faire fonctioner le client sous windows, je voit pour régler cela au plus vite.
