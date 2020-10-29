@@ -27,4 +27,3 @@ client2/yarn-error.log*
 
 # dependencies
 server/node_modules
-server/dist/**/*
