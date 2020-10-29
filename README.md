@@ -1,7 +1,12 @@
-1) Avoir une version de Node.js + npm à jour
-2) Exécuter la commande "npm install" à la racine du projet
-3) Exécuter la commande "npm run dev" à la racine du projet pour démarer le seveur, actuellement, le serveur écoute sur le port 8080.
-A venir :
---> Une commande juste pour lancer le serveur afin de visualiser le projet et non pas pour le développer
---> Le choix du port d'écoute via le terminal
-4) Se rendre à l'adresse "localhost:8080" dans le navigateur web de votre choix
+1. Avoir une version de Node.js à jour : https://nodejs.org/en/
+2. Ouvrir deux terminal : Un pour le client, un pour le serveur
+3. Dans le terminal pour le serveur :
+  1. Exécuter la commande : npm install
+  2. Exécuter la commande : npm run dev
+  3. Le serveur est maintenant lancé sur le port 8080
+4. Dans le terminal pour le client :
+  1. Exécuter la commande : npm install.
+  2. Exécuter la commande npm run start.
+  3. Le client est maintenant lancé sur le port 3000.
+5. Normalement une fenêtre s'est ouverte dans votre navigateur web à l'adresse : localhost:3000
+  * Si ce n'est pas le cas ouvrez la manuellement en tapant dans la barre d'adresse : localhost:3000
