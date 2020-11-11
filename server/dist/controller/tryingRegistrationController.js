@@ -13,18 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connectDB_1 = __importDefault(require("../connectDB"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const saltRounds = 10;
 exports.default = (socket) => {
     return (ID) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('In server socket.on("registation")');
+        ID.userName = ID.userName.toLowerCase();
         const db = yield connectDB_1.default();
-        const verif = yield db.get('SELECT * FROM Users WHERE userName=(?)', [ID.userName]);
-        if (verif) {
+        const verify = yield db.get('SELECT * FROM Users WHERE userName=(?)', [ID.userName]);
+        if (verify) {
             console.log('Error user name is not available');
             socket.emit('userNameNotAvailable');
         }
         else {
+            const passwordHash = yield bcrypt_1.default.hash(ID.password, saltRounds);
             const request = 'INSERT INTO Users VALUES ((?),(?))';
-            const result = yield db.run(request, [ID.userName, ID.password]);
+            yield db.run(request, [ID.userName, passwordHash]);
             console.log('User stored');
         }
     });

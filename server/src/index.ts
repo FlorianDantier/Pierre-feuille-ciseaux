@@ -3,22 +3,10 @@ import database from './connectDB'
 import tryingRegistrationController from './controller/tryingRegistrationController'
 import tryingConnectionController from './controller/tryingConnectionController'
 import disconnectController from './controller/disconnetController'
-import { log } from 'console'
+import wantToPlayController from './controller/wantToPlayController'
+import haveChoosedController from "./controller/haveChoosedController";
 
 const io = socketio()
-
-interface User{
-  userName: string
-  password: string
-}
-
-interface idAndName{
-  id: string,
-  name: string
-}
-
-var tabUserWantPlay: idAndName[]  = []
-
 
 io.on('connection', (socket: Socket) => {
   console.log('A user has logged')
@@ -29,25 +17,12 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('tryingConnection', tryingConnectionController(socket, io))
 
-  socket.on('wantToPlay', (username) => {
-    console.log(username + ' want to play');
-    tabUserWantPlay.push({
-      id: socket.id,
-      name: username
-    })
-    if (tabUserWantPlay.length >= 2)
-    {
-      console.log('Two user want play together !')
-      
-      //const otherUser = tabUserWantPlay.filter(e => e !== socket.id)[0]
-      io.to(tabUserWantPlay[0].id).emit('readyToPlay', tabUserWantPlay[1])
-      io.to(tabUserWantPlay[1].id).emit('readyToPlay', tabUserWantPlay[0])
-      tabUserWantPlay = []
-    }    
-  })
-  socket.on('haveChoosed', (partner: idAndName, value: string) => {
-    //console.log('In haveChoosed')
-    io.to(partner.id).emit('partnerHaveChoosed', value)
+  socket.on('wantToPlay', wantToPlayController(io, socket))
+  
+  socket.on('haveChoosed', haveChoosedController(socket))
+
+  socket.on('wantToPlayAgainstBot', () => {
+    console.log('In wantToPlayAgainstBot ...')
   })
 })
 

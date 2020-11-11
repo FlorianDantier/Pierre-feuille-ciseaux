@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import io from 'socket.io-client'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const socket = io('http://localhost:8080')
+
 
 ReactDOM.render(
   <React.StrictMode>

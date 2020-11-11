@@ -13,15 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connectDB_1 = __importDefault(require("../connectDB"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.default = (socket, io) => {
     return (ID) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('Dans tryingConnection');
+        ID.userName = ID.userName.toLowerCase();
+        console.log('In tryingConnection');
         const db = yield connectDB_1.default();
-        const result = yield db.get('SELECT * FROM Users WHERE userName=(?) AND password=(?)', [ID.userName, ID.password]);
+        const result = yield db.get('SELECT * FROM Users WHERE userName=(?)', [ID.userName]);
         if (result) {
-            const userName = result.userName;
-            console.log('Succesfull connection !');
-            socket.emit('connected', userName);
+            const same = yield bcrypt_1.default.compare(ID.password, result.password);
+            if (same) {
+                const userName = result.userName;
+                console.log('Succesfull connection !');
+                socket.emit('connected', userName);
+            }
+            else {
+                console.log('Error userName or password');
+            }
         }
         else {
             console.log('Error userName or password');

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import Registration from './class/Registration'
-import Connection from './class/Connection'
-import ConnectedView from './ConnectedView'
-import Game from './class/Game'
+import Registration from './Component/Registration'
+import Connection from './Component/Connection'
+import Connected from './Component/Connected'
+import Game from './Component/Game'
+import Container from "react-bootstrap/cjs/Container";
+import Row from "react-bootstrap/cjs/Row";
+import Col from "react-bootstrap/cjs/Col";
+import Menu from "./Component/Menu"
 
-class App extends Component{
+class App extends Component {
 
-  constructor(props)
-  {
+  constructor(props) {
     super(props)
     this.state = {
       userName: undefined,
@@ -18,9 +21,8 @@ class App extends Component{
       }
     }
   }
-  
-  componentDidMount()
-  {
+
+  componentDidMount() {
     this.props.socket.on('connected', (userName) => {
       console.log('In socket emit connection');
       this.setState({userName: userName})
@@ -33,35 +35,52 @@ class App extends Component{
     })
   }
 
-  componentWillUnmount()
-  {
+  componentWillUnmount() {
     this.props.socket.off('connected')
     this.props.socket.off('readyToPlay')
   }
 
-  render() 
-  {
-    if(this.state.readyToPlay)
-    {
-      return <Game socket={this.props.socket} partner={this.state.partner}/>
-    }
-    else
-    {
-      if(this.state.userName)
-      {
-        return  <ConnectedView user={this.state.userName} socket={this.props.socket}/>
+  render() {
+    let currentView;
+    if (this.state.readyToPlay) {
+      currentView = <Game socket={this.props.socket} partner={this.state.partner}/>
+    } else {
+      if (this.state.userName) {
+        currentView = <Connected user={this.state.userName} socket={this.props.socket}/>
+      } else {
+        // Mettre le tout dans un composant
+        currentView = <React.Fragment>
+          <Row>
+            <Col>
+              <Registration socket={this.props.socket}/>
+            </Col>
+          </Row>
+          <br/>
+          <Row className="justify-content-center bg-dark text-white">
+            <h2>Vous avez déjà un compte ?</h2>
+          </Row>
+          <br/>
+          <Row>
+            <Col>
+              <Connection socket={this.props.socket}/>
+            </Col>
+          </Row>
+        </React.Fragment>
       }
-      else
-      {
-        return <React.Fragment>
-        <Registration socket={this.props.socket}/>
-        <h3>Ou</h3>
-        <Connection socket={this.props.socket}/>
-      </React.Fragment>
-      }
     }
+    return <Container fluid>
+      <Row>
+        <Col>
+          <Menu currentUser={this.state.userName}/>
+        </Col>
+      </Row>
+      <br/>
+      {currentView}
+      <br/>
+    </Container>
   }
+
 }
 
-export default App;
+export default App
 

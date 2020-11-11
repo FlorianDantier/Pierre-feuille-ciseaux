@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Button from "react-bootstrap/cjs/Button";
+import Form from "react-bootstrap/Form"
 export default class Connection extends Component{
 
   constructor(props){
@@ -22,7 +24,7 @@ export default class Connection extends Component{
     this.setState({passwordValue: event.currentTarget.value})
   }
 
-  onClick(e) { // Voir pour trouver le bon type
+  handleButton(e) { // Voir pour trouver le bon type
     e.preventDefault()
     console.log('Btn pressed in onClick function in Registration class');
     if (this.state.passwordValue === '' || this.state.userNameValue === '') {
@@ -42,18 +44,22 @@ export default class Connection extends Component{
   }
 
   render() {
-    return <form>
-      <h1>Se connecter</h1>
-      <label htmlFor="userName">Nom d'utilisateur : </label>
-      <input type="text" id="userNameConnect" name="userNameConnect" value={this.state.userNameValue} onChange={this.handleChangeUserName.bind(this)}/>
-      <br />
-      <br/>
-      <label htmlFor="passwordConnect">Mot de passe</label>
-      <input type="password" name="passwordConnect" id="passwordConnect" value={this.state.passwordValue} onChange={this.handleChangePassword.bind(this)}/>
-      <br />
-      <br/>
-      <button type="submit" onClick={this.onClick.bind(this)}>Valider</button>
-      {this.state.error ? this.state.messageError : <React.Fragment/> }
-    </form>
+
+    return <React.Fragment>
+      <h1 className="text-lg-center font-weight-bold bg-info">Se connecter :</h1>
+      <Form>
+        <Form.Group controlId="userName">
+          <Form.Label>Nom d'utilisateur :</Form.Label>
+          <Form.Control type="text" placeholder="Nom d'utilisateur" value={this.state.userNameValue} onChange={this.handleChangeUserName.bind(this)}/>
+        </Form.Group>
+
+        <Form.Group controlId="password">
+          <Form.Label>Mot de passe :</Form.Label>
+          <Form.Control type="password" placeholder="Mot de passe" value={this.state.passwordValue} onChange={this.handleChangePassword.bind(this)}/>
+        </Form.Group>
+
+        <Button type="submit" variant="primary" onClick={this.handleButton.bind(this)}>Se connecter</Button>
+      </Form>
+    </React.Fragment>
   }
 }
