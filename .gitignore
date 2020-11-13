@@ -27,3 +27,7 @@ client2/yarn-error.log*
 
 # dependencies
 server/node_modules
+
+# ============ general ============ #
+
+.idea/
