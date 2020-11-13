@@ -8,11 +8,12 @@ class Connected extends Component
     constructor(props)
     {
         super(props)
-        // this.state = { value: ''}
+
         this.state = {
-            userAreWaiting: false
+            userAreWaiting: false,
         }
     }
+
 
     handleLookingForPartner(e)
     {

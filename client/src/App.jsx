@@ -18,7 +18,9 @@ class App extends Component {
       partner: {
         id: '',
         name: ''
-      }
+      },
+      playAgainstBot: false,
+      NoFreeRoom: false
     }
   }
 
@@ -28,10 +30,28 @@ class App extends Component {
       this.setState({userName: userName})
     })
 
+    // Event emit (by the server) when two users are in the same room
     this.props.socket.on('readyToPlay', (p) => {
       console.log('Prêt à jouer')
       console.log(`Your partner is ${p.name}`)
       this.setState({readyToPlay: true, partner: p})
+    })
+
+    this.props.socket.on('readyToPlayAgainstBot', () => {
+      console.log('In playAgainstBot')
+      this.setState({
+        playAgainstBot: true,
+        readyToPlay: true,
+      })
+    })
+
+    this.props.socket.on('NoFreeRoom', () => {
+      console.log('In NoFreeRoom listener')
+      this.setState({
+        NoFreeRoom: true,
+        readyToPlay: true
+      })
+
     })
   }
 
@@ -42,12 +62,35 @@ class App extends Component {
 
   render() {
     let currentView;
-    if (this.state.readyToPlay) {
-      currentView = <Game socket={this.props.socket} partner={this.state.partner}/>
-    } else {
-      if (this.state.userName) {
+    console.log("Render's refresh...")
+    console.log('readyToPlay : ', this.state.readyToPlay)
+    console.log('NoFreeRoom : ',this.state.NoFreeRoom)
+    if (this.state.readyToPlay) // Quant on a cliqué soit sur jouer conter un adversaire ou jouer contre un bot
+    {
+      if(this.state.NoFreeRoom)
+      {
+        currentView = <h1>Erreur, pas de salon disponible ...</h1>
+      }
+      else
+      {
+        if(this.state.playAgainstBot)
+        {
+          currentView = <Game socket={this.props.socket} partner={false}/>
+        }
+        else
+        {
+          currentView = <Game socket={this.props.socket} partner={this.state.partner}/>
+        }
+      }
+    }
+    else
+    {
+      if (this.state.userName)
+      {
         currentView = <Connected user={this.state.userName} socket={this.props.socket}/>
-      } else {
+      }
+      else
+      {
         // Mettre le tout dans un composant
         currentView = <React.Fragment>
           <Row>

@@ -39,6 +39,15 @@ class Game extends Component {
                 partnersChoice: value
             })
         })
+
+        this.props.socket.on('botHaveChosen', (choice) => {
+            if(choice === 0) choice = _.Pierre
+            if(choice === 1) choice = _.Feuille
+            if(choice === 2) choice = _.Ciseau
+            this.setState({
+                partnersChoice: choice
+            })
+        })
     }
 
     componentDidUpdate()
@@ -97,13 +106,24 @@ class Game extends Component {
     {
         const value = e.currentTarget.value
         console.log(`Curent tagret of e : ${value} an type id ${typeof(value)}`)
+
         this.setState({ myChoice: value })
+
         console.log(this.props.partner)
-        this.props.socket.emit('haveChoosed', this.props.partner, e.currentTarget.value)
+        if(this.props.partner !== false)
+        {
+            this.props.socket.emit('haveChoosed', this.props.partner, e.currentTarget.value)
+        }
+        else
+        {
+            this.props.socket.emit('PlayAgainstBot')
+        }
+
     }
 
     render()
     {
+        // refactor this portion
         if(this.state.myChoice === '')
         {
             return <Container className="bg-light" fluid>
