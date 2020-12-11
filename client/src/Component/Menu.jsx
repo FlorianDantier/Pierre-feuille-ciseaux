@@ -17,7 +17,12 @@ export default class Menu extends Component
     handleLinkHome(e)
     {
         e.preventDefault()
+    }
 
+    handleStatsBtn(e)
+    {
+        e.preventDefault()
+        this.props.socket.emit('showStats', this.props.currentUser)
     }
 
     render()
@@ -34,12 +39,10 @@ export default class Menu extends Component
                         <Nav.Link href="#home" className="text-white" >Accueil</Nav.Link>
                     </Button>
                     {this.props.currentUser ?
-                        <Button variant="link">
+                        <Button onClick={this.handleStatsBtn.bind(this)} variant="link">
                             <Nav.Link href="#link" className="text-white">Statistiques</Nav.Link>
                         </Button>
                     : <React.Fragment/>}
-
-
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

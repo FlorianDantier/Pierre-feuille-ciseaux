@@ -21,20 +21,26 @@ class App extends Component {
       },
       playAgainstBot: false,
       NoFreeRoom: false
+
     }
   }
 
   componentDidMount() {
     this.props.socket.on('connected', (userName) => {
       console.log('In socket emit connection');
-      this.setState({userName: userName})
+      this.setState({
+        userName: userName
+      })
     })
 
     // Event emit (by the server) when two users are in the same room
     this.props.socket.on('readyToPlay', (p) => {
       console.log('Prêt à jouer')
       console.log(`Your partner is ${p.name}`)
-      this.setState({readyToPlay: true, partner: p})
+      this.setState({
+        readyToPlay: true,
+        partner: p
+      })
     })
 
     this.props.socket.on('readyToPlayAgainstBot', () => {
@@ -51,20 +57,19 @@ class App extends Component {
         NoFreeRoom: true,
         readyToPlay: true
       })
-
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount()
+  {
     this.props.socket.off('connected')
     this.props.socket.off('readyToPlay')
+    this.props.socket.off('readyToPlayAgainstBot')
+    this.props.socket.off('NoFreeRoom')
   }
 
   render() {
-    let currentView;
-    console.log("Render's refresh...")
-    console.log('readyToPlay : ', this.state.readyToPlay)
-    console.log('NoFreeRoom : ',this.state.NoFreeRoom)
+    let currentView
     if (this.state.readyToPlay) // Quant on a cliqué soit sur jouer conter un adversaire ou jouer contre un bot
     {
       if(this.state.NoFreeRoom)
@@ -114,7 +119,7 @@ class App extends Component {
     return <Container fluid>
       <Row>
         <Col>
-          <Menu currentUser={this.state.userName}/>
+          <Menu currentUser={this.state.userName} socket={this.props.socket}/>
         </Col>
       </Row>
       <br/>

@@ -4,7 +4,8 @@ import Row from "react-bootstrap/cjs/Row";
 import Col from "react-bootstrap/cjs/Col";
 import Button from "react-bootstrap/cjs/Button";
 
-const sizeLeft = 3;
+const sizeLeft = 3
+const numberManche = 3
 
 const _ = Object.freeze({
     Pierre: 'Pierre',
@@ -26,15 +27,16 @@ class Game extends Component {
             myChoice: '',
             partnersChoice: '',
             myScore: 0,
-            scoresPartner: 0
+            scoresPartner: 0,
+            stopGame: false
         }
     }
 
 
     componentDidMount()
     {
-        this.props.socket.on('partnerHaveChoosed', (value) => {
-            console.log('Ok ça marche ! ' + value)
+        this.props.socket.on('partnerHaveChosen', (value) => {
+            console.log('Listener in Game.jsx : partnerHaveChosen')
             this.setState({
                 partnersChoice: value
             })
@@ -46,6 +48,13 @@ class Game extends Component {
             if(choice === 2) choice = _.Ciseau
             this.setState({
                 partnersChoice: choice
+            })
+        })
+
+        this.props.socket.on('stopGame', () => {
+            console.log("Ok game finished ! ")
+            this.setState({
+                stopGame: true
             })
         })
     }
@@ -71,6 +80,15 @@ class Game extends Component {
            else if(result === resultROund.MatchNull)
            {
                // On n'ajoute aucun point.
+           }
+       }
+
+       if(this.state.myScore === numberManche || this.state.scoresPartner === numberManche)
+       {
+           console.log('In fin partie')
+           if(this.state.stopGame === false)
+           {
+               this.props.socket.emit('gameFinished')
            }
        }
     }
@@ -112,21 +130,21 @@ class Game extends Component {
         console.log(this.props.partner)
         if(this.props.partner !== false)
         {
-            this.props.socket.emit('haveChoosed', this.props.partner, e.currentTarget.value)
+            this.props.socket.emit('haveChosen', this.props.partner, e.currentTarget.value)
         }
         else
         {
             this.props.socket.emit('PlayAgainstBot')
         }
-
     }
 
     render()
     {
-        // refactor this portion
-        if(this.state.myChoice === '')
+        // Revoir ce rendu : trop compliqué et en plus, pas ok du tout, faire quelque chose de plus simple
+        let currentView
+        if(this.state.stopGame === false)
         {
-            return <Container className="bg-light" fluid>
+            currentView =  <Container className="bg-light" fluid>
                 <Row>
                     <Col lg={sizeLeft} md={sizeLeft} className="bg-success">
                         <h3>Mon score :</h3>
@@ -139,7 +157,7 @@ class Game extends Component {
                     <Col lg={sizeLeft} md={sizeLeft} className="bg-success">
                         <h3>{this.state.myScore}</h3>
                     </Col>
-                    <Col lg={8} md={8}>
+                    <Col>
 
                     </Col>
                 </Row>
@@ -147,56 +165,14 @@ class Game extends Component {
                     <Col lg={sizeLeft} md={sizeLeft} className="bg-dark text-right">
                         <h4 className="text-white">Faites votre choix --></h4>
                     </Col>
-                    <Col lg={8} md={8}>
-                        <Button value={_.Pierre} onClick={this.handleBtn.bind(this)} variant="dark">Pierre</Button>
-                        <Button value={_.Feuille}  onClick={this.handleBtn.bind(this)} variant="dark">Feuille</Button>
-                        <Button value={_.Ciseau}  onClick={this.handleBtn.bind(this)} variant="dark">Ciseau</Button>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col lg={sizeLeft} md={sizeLeft} className="bg-danger">
-                        <h3>Score de mon adversaire :</h3>
-                    </Col>
-                    <Col lg={8} md={8}>
+                    {this.state.myChoice === "" && this.props.partner || !this.props.partner ?
+                        <Col>
+                            <Button value={_.Pierre} onClick={this.handleBtn.bind(this)} variant="dark">Pierre</Button>
+                            <Button value={_.Feuille}  onClick={this.handleBtn.bind(this)} variant="dark">Feuille</Button>
+                            <Button value={_.Ciseau}  onClick={this.handleBtn.bind(this)} variant="dark">Ciseau</Button>
+                        </Col>
+                        : <h2>En attente du coup adverse</h2>}
 
-                    </Col>
-                </Row>
-                <Row>
-                    <Col lg={sizeLeft} md={sizeLeft} className="bg-danger">
-                       <h3> {this.state.scoresPartner} </h3>
-                    </Col>
-                    <Col lg={8} md={8}>
-
-                    </Col>
-                </Row>
-            </Container>
-        }
-        else
-        {
-            return <Container className="bg-light" fluid>
-                <Row>
-                    <Col lg={sizeLeft} md={sizeLeft} className="bg-success">
-                        <h3>Mon score :</h3>
-                    </Col>
-                    <Col lg={8} md={8}>
-                        <h2>Vous êtes prêt à jouer !</h2>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col lg={sizeLeft} md={sizeLeft} className="bg-success">
-                        <h3>{this.state.myScore}</h3>
-                    </Col>
-                    <Col lg={8} md={8}>
-
-                    </Col>
-                </Row>
-                <Row>
-                    <Col lg={sizeLeft} md={sizeLeft} className="bg-dark text-right">
-                        <h4 className="text-white">Faites votre choix --></h4>
-                    </Col>
-                    <Col lg={8} md={8}>
-                        <h2>En attente du coup adverse....</h2>
-                    </Col>
                 </Row>
                 <Row>
                     <Col lg={sizeLeft} md={sizeLeft} className="bg-danger">
@@ -216,7 +192,11 @@ class Game extends Component {
                 </Row>
             </Container>
         }
-
+        else
+        {
+            currentView = <h1>Partie terminé</h1>
+        }
+        return currentView
     }
 }
 

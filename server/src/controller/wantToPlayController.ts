@@ -1,24 +1,20 @@
 import { Socket, Server } from "socket.io";
+import SetOfRoom from "../class/SetOfRoom";
 
-// Améliorer ce système ...
-var selectorRoom: number = 0
-
-interface idAndName{
-  id: string,
-  name: string
-}
-
-export default (io: Server, socket: Socket) => {
-  return (username: string) => {
-    console.log(username + ' want to play');
-    const currentRoom = `room${selectorRoom}`;
-    socket.join(currentRoom)
-    const numberUserInRoom = io.nsps['/'].adapter.rooms[currentRoom].length
-    if (numberUserInRoom >= 2)
+export default (UsersRoom: SetOfRoom ,io: Server, socket: Socket | any) => (username: string) => {
+    console.log(username + ' want to play')
+    const currentRoom = UsersRoom.add(socket)
+    console.log('room joined : ' + currentRoom)
+    if(currentRoom)
     {
-      console.log('Two user want play together !')
-      io.to(currentRoom).emit('readyToPlay', currentRoom)
-      selectorRoom = selectorRoom + 1
+        console.log(username + ' a rejoint le salon ' + currentRoom)
+        const numberUserInRoom = io.nsps['/'].adapter.rooms[currentRoom].length
+        socket.numberUser = numberUserInRoom
+        if (numberUserInRoom >= 2)
+        {
+            console.log('Two user want play together !')
+            io.to(currentRoom).emit('readyToPlay', currentRoom)
+        }
     }
   }
-}
+

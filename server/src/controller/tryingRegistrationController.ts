@@ -9,9 +9,7 @@ interface User{
   password: string
 }
 
-export default (socket: Socket) => {
-
- return async (ID: User) => {
+export default (socket: Socket) => async (ID: User) => {
     console.log('In server socket.on("registation")')
     ID.userName = ID.userName.toLowerCase()
     const db = await database()
@@ -28,6 +26,5 @@ export default (socket: Socket) => {
       await db.run(request, [ID.userName, passwordHash])
       console.log('User stored');
    }
-  }
 }
 

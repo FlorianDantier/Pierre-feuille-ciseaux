@@ -7,8 +7,8 @@ interface User{
   password: string
 }
 
-export default (socket: Socket, io: SocketIO.Server) => {
-  return async (ID: User) => {
+
+export default (socket: Socket | any, io: SocketIO.Server) => async (ID: User) => {
     ID.userName = ID.userName.toLowerCase()
     console.log('In tryingConnection')
     const db = await database()
@@ -20,8 +20,11 @@ export default (socket: Socket, io: SocketIO.Server) => {
       if(same)
       {
         const userName = result.userName
+        socket.userName = userName
+        console.log('Socket.username = ',socket.userName)
         console.log('Succesfull connection !')
         socket.emit('connected', userName)
+
       }
       else
       {
@@ -32,5 +35,4 @@ export default (socket: Socket, io: SocketIO.Server) => {
     {
       console.log('Error userName or password')
     }
-  }
 }

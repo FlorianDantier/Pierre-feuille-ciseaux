@@ -4,49 +4,40 @@ import {Socket} from "socket.io";
 class SetOfRoom
 {
     private _Rooms: Room[]
-    private _size: number
+    private _numberOfRoom: number
 
-    public constructor(readonly size: number, readonly capacity: number)
+    public constructor(readonly numberOfRoom: number, readonly slotInOneRoom: number)
     {
-        this._size = size
-        this._Rooms = new Array<Room>(size)
-        for(let i = 0; i < this._size; i++)
+        this._numberOfRoom = numberOfRoom
+        this._Rooms = new Array<Room>(numberOfRoom)
+        for(let i = 0; i < this._numberOfRoom; i++)
         {
-            this._Rooms[i] = new Room(capacity, `room${i}`)
+            this._Rooms[i] = new Room(slotInOneRoom, `room${i}`)
         }
     }
 
     // Retourne truc si le socket a bien rejoint un salon, faux sinon
-    public add(socket: Socket): boolean
+    public add(socket: Socket): string
     {
-        const RoomsFree = this._Rooms.filter(e => e._isFree === true)
-        let firstRoomFree: Room
-        if(RoomsFree.length > 0)
+        const RoomsFree = this._Rooms.filter(e => e.isFree === true)
+        if(RoomsFree[0])
         {
-            firstRoomFree = RoomsFree[0]
-            const index = this._Rooms.findIndex(e => e._name === firstRoomFree._name)
-            this._Rooms[index]._isFree = false
-            socket.join(firstRoomFree._name)
-
-            return true
+            return RoomsFree[0].add(socket)
         }
         else
         {
-            return false
+            return undefined
         }
     }
 
     public remove(socket: Socket): void
     {
-        const roomIfExist = Object.keys(socket.rooms)
-        console.log(roomIfExist)
-        if(Object.keys(socket.rooms)[1])
+        // On récupère le salon auquel le socket appartient
+        const roomIfExist = Object.keys(socket.rooms)[1]
+        // Si il y a un salon ...
+        if(roomIfExist)
         {
-            const room = Object.keys(socket.rooms)[1]
-            const index = this._Rooms.findIndex(e => e._name === room)
-            this._Rooms[index]._isFree = true
-            socket.leave(room)
-            console.log(`Le socket a été retiré du salon ${Object.keys(socket.rooms)[1]}`)
+            this._Rooms.filter(e => e._name === roomIfExist)[0].remove(socket)
         }
         else
         {
