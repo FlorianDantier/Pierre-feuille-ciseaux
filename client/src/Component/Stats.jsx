@@ -75,6 +75,8 @@ class Stats extends Component
 
     convertStats1()
     {
+        // console.log('in convert stats 1')
+        // console.log('props.Statistiques : ', this.props.Statistiques)
         return [... this.props.Statistiques].map(e => {
             if(this.props.user === e.user1)
             {
@@ -106,7 +108,10 @@ class Stats extends Component
     convertStats2()
     {
 
+
         let s1 = this.convertStats1()
+        console.log('in convert stats 2')
+        console.log('s1 ', s1)
         let countBis = 0
         let finalTab = []
         for (let i = 0; i < s1.length; i++)

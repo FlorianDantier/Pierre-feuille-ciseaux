@@ -23,10 +23,10 @@ client2/npm-debug.log*
 client2/yarn-debug.log*
 client2/yarn-error.log*
 
-# ============ server ============ #
+# ============ SocketServer ============ #
 
 # dependencies
-server/node_modules
+SocketServer/node_modules
 
 # ============ general ============ #
 

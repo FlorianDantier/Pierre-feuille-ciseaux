@@ -16,7 +16,7 @@ const connectDB_1 = __importDefault(require("../connectDB"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const saltRounds = 10;
 exports.default = (socket) => (ID) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('In server socket.on("registation")');
+    console.log('In SocketServer socket.on("registation")');
     ID.userName = ID.userName.toLowerCase();
     const db = yield connectDB_1.default();
     const verify = yield db.get('SELECT * FROM Users WHERE userName=(?)', [ID.userName]);

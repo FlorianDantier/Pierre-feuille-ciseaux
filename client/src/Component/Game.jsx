@@ -91,6 +91,11 @@ class Game extends Component {
                this.props.socket.emit('gameFinished')
            }
        }
+
+       if(this.state.stopGame)
+       {
+           this.props.socket.emit('closeRoom')
+       }
     }
 
     didIWinThisRound(myChoice, partnersChoice) // Uniquement à appelé dans le if de componentDidUpdate
@@ -144,7 +149,7 @@ class Game extends Component {
         let currentView
         if(this.state.stopGame === false)
         {
-            currentView =  <Container className="bg-light" fluid>
+            currentView = <Container className="bg-light" fluid>
                 <Row>
                     <Col lg={sizeLeft} md={sizeLeft} className="bg-success">
                         <h3>Mon score :</h3>
@@ -194,7 +199,11 @@ class Game extends Component {
         }
         else
         {
-            currentView = <h1>Partie terminé</h1>
+            currentView = <React.Fragment>
+                <h1>Partie terminé</h1>
+                <Button onClick={this.props.endGameFct}>Retour à l'accueil</Button>
+            </React.Fragment>
+
         }
         return currentView
     }

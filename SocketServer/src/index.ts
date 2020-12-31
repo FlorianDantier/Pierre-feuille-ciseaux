@@ -9,8 +9,10 @@ import disconnectingController from "./controller/disconnectingController"
 import wantToPlayAgainstBotController from "./controller/wantToPlayAgainstBotController"
 import playAgainstBotController from "./controller/playAgainstBotController"
 import Game from "./class/handleDataBase/Game"
-import gameFinishedController from "./controller/gameFinishedController";
-import connectDB from "./connectDB";
+import gameFinishedController from "./controller/gameFinishedController"
+import connectDB from "./connectDB"
+import showStatsController from "./controller/showStatsController"
+import closeRoomController from "./closeRoomController"
 
 
 enum Choice
@@ -31,10 +33,11 @@ enum Strategy
 const io = socketio()
 
 let BotsRoom = new SetOfRoom(2, 1)
-let UsersRoom = new SetOfRoom(10, 10)
+let UsersRoom = new SetOfRoom(10, 2)
 
 
-var storeGame : Game[] = [] // Faire une classe pour gérer ça
+
+var storeGame : Game[] = []
 
 
 
@@ -59,20 +62,11 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('gameFinished', gameFinishedController(socket, io, storeGame))
 
-  socket.on('showStats', async (currentUser) => {
-    console.log('In show stats')
-    if(socket.id === undefined) console.log('Error : No id on this socket !')
-    const coDB = await connectDB()
-    const result = await coDB.all('SELECT * FROM Game WHERE user1=(?) OR user2=(?)', [currentUser, currentUser])
-    console.log(result)
-    io.to(socket.id).emit('getStats', result)
-    // Avant d'enregistrer : vérifier que l'on ai bien une partie fini (pas de déco ou autre coupure)
-    // Gérer les match null
-    // Quiter la page après partie fini
-  })
+  socket.on('showStats', showStatsController(io, socket))
+
+  socket.on('closeRoom', closeRoomController(UsersRoom, socket))
 })
 
 io.listen(8080)
-
 
 console.log('listening on port : 8080')

@@ -10,7 +10,7 @@ interface User{
 }
 
 export default (socket: Socket) => async (ID: User) => {
-    console.log('In server socket.on("registation")')
+    console.log('In SocketServer socket.on("registation")')
     ID.userName = ID.userName.toLowerCase()
     const db = await database()
     const verify: User = await db.get('SELECT * FROM Users WHERE userName=(?)', [ID.userName])

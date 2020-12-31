@@ -5,7 +5,7 @@ import Form from "react-bootstrap/cjs/Form"
 import Button from "react-bootstrap/cjs/Button";
 import FormControl from "react-bootstrap/cjs/FormControl"
 import React, {Component} from "react";
-
+import MenuChoices from '../Enum/menuChoices'
 
 export default class Menu extends Component
 {
@@ -17,19 +17,22 @@ export default class Menu extends Component
     handleLinkHome(e)
     {
         e.preventDefault()
+        this.props.func(MenuChoices.Connected)
     }
 
     handleStatsBtn(e)
     {
         e.preventDefault()
         this.props.socket.emit('showStats', this.props.currentUser)
+        this.props.func(MenuChoices.stats)
+
     }
 
     render()
     {
         return <Navbar variant="dark" bg="primary" expand="lg">
             <Button variant="link">
-                <Navbar.Brand href="#home">LIFPROJET</Navbar.Brand>
+                <Navbar.Brand>LIFPROJET</Navbar.Brand>
             </Button>
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
