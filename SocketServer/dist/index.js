@@ -31,18 +31,18 @@ var Strategy;
 const io = socket_io_1.default();
 let BotsRoom = new SetOfRoom_1.default(2, 1);
 let UsersRoom = new SetOfRoom_1.default(10, 2);
-var storeGame = [];
 io.on('connection', (socket) => {
+    let sg = [];
     console.log('A user has logged');
-    socket.on('disconnect', disconnetController_1.default); // Voir pour passer le tab en param puis suprimer l'id du socket si deco
+    socket.on('disconnect', disconnetController_1.default);
     socket.on('disconnecting', disconnectingController_1.default(BotsRoom, socket));
     socket.on('tryingRegistration', tryingRegistrationController_1.default(socket));
     socket.on('tryingConnection', tryingConnectionController_1.default(socket, io));
     socket.on('wantToPlay', wantToPlayController_1.default(UsersRoom, io, socket));
-    socket.on('haveChosen', haveChoosedController_1.default(socket, storeGame));
     socket.on('wantToPlayAgainstBot', wantToPlayAgainstBotController_1.default(BotsRoom, socket));
     socket.on('PlayAgainstBot', playAgainstBotController_1.default(BotsRoom, socket, io));
-    socket.on('gameFinished', gameFinishedController_1.default(socket, io, storeGame));
+    socket.on('haveChosen', haveChoosedController_1.default(socket, sg));
+    socket.on('gameFinished', gameFinishedController_1.default(socket, io, sg));
     socket.on('showStats', showStatsController_1.default(io, socket));
     socket.on('closeRoom', closeRoomController_1.default(UsersRoom, socket));
 });

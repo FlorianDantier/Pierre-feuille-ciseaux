@@ -1,35 +1,28 @@
 import {Socket} from "socket.io"
-import Game from "../class/handleDataBase/Game";
+import Game from "../class/handleDataBase/Game"
+import reqGame from "../class/handleDataBase/reqGame"
+import connectDB from "../connectDB";
 
-export default (socket: Socket | any, storeGame: Game[]) => (room: string, value: string) => {
-        if(socket.count === undefined)
-        {
-                socket.count = 0;
-        }
-
+export default  (socket: Socket | any, storeGame: Game[]) => async (room: string, value: string) => {
         console.log('In haveChoosed')
-        console.log(room)
-        console.log('In registration socket.username = ',socket.userName)
+        console.log('Value room : ', room)
 
-        if(socket.count === storeGame.length)
+        let lastIdGame = undefined
+        if(storeGame.length === 0)
         {
-                storeGame.push(new Game(undefined))
+                const coDB = await connectDB()
+                const rg = new reqGame(coDB)
+                lastIdGame = await rg.getLastIdGame()
         }
 
-        if(socket.numberUser === 1)
-        {
-                storeGame[socket.count].user1 = socket.userName // Voir si on peut pas hériter de socket puis rajouter cette attribut plutot que de faire ainsi
-                storeGame[socket.count].user1Choice = value
-                storeGame[socket.count].idManche = socket.count
-        }
-        if(socket.numberUser === 2)
-        {
-                storeGame[socket.count].user2 = socket.userName
-                storeGame[socket.count].user2Choice = value
-        }
-
-
-        socket.count ++
+        console.log('Value lastIdGame : ', lastIdGame)
+        storeGame.push(new Game({
+                choice: value,
+                user: socket.userName,
+                idManche: storeGame.length,
+                idGame: lastIdGame !== undefined ? lastIdGame + 1 : storeGame[0].idGame
+        }))
+        console.log('content of storegame : ', storeGame)
         socket.to(room).emit('partnerHaveChosen', value)
 }
 

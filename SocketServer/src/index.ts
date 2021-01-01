@@ -36,15 +36,11 @@ let BotsRoom = new SetOfRoom(2, 1)
 let UsersRoom = new SetOfRoom(10, 2)
 
 
-
-var storeGame : Game[] = []
-
-
-
-
 io.on('connection', (socket: Socket) => {
+  let sg : Game[] = []
+
   console.log('A user has logged')
-  socket.on('disconnect', disconnectController) // Voir pour passer le tab en param puis suprimer l'id du socket si deco
+  socket.on('disconnect', disconnectController)
 
   socket.on('disconnecting', disconnectingController(BotsRoom, socket))
 
@@ -53,14 +49,14 @@ io.on('connection', (socket: Socket) => {
   socket.on('tryingConnection', tryingConnectionController(socket, io))
 
   socket.on('wantToPlay', wantToPlayController(UsersRoom, io, socket))
-  
-  socket.on('haveChosen', haveChosenController(socket, storeGame))
 
   socket.on('wantToPlayAgainstBot', wantToPlayAgainstBotController(BotsRoom, socket))
 
   socket.on('PlayAgainstBot', playAgainstBotController(BotsRoom, socket, io))
 
-  socket.on('gameFinished', gameFinishedController(socket, io, storeGame))
+  socket.on('haveChosen', haveChosenController(socket, sg))
+
+  socket.on('gameFinished', gameFinishedController(socket, io, sg))
 
   socket.on('showStats', showStatsController(io, socket))
 

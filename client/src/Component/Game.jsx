@@ -1,23 +1,16 @@
 import React,  { Component } from 'react'
-import Container from "react-bootstrap/cjs/Container";
-import Row from "react-bootstrap/cjs/Row";
-import Col from "react-bootstrap/cjs/Col";
-import Button from "react-bootstrap/cjs/Button";
+import Container from "react-bootstrap/cjs/Container"
+import Row from "react-bootstrap/cjs/Row"
+import Col from "react-bootstrap/cjs/Col"
+import Button from "react-bootstrap/cjs/Button"
+
+import ConvertStats from "../ConvertStats"
+import gameChoices from "../Enum/gameChoices"
+import resultRound from "../Enum/resultRound"
 
 const sizeLeft = 3
 const numberManche = 3
 
-const _ = Object.freeze({
-    Pierre: 'Pierre',
-    Feuille: 'Feuille',
-    Ciseau: 'Ciseau'
-}) 
-
-const resultROund = Object.freeze({
-    Win : 1,
-    Loose: -1,
-    MatchNull: 0
-})
 
 class Game extends Component {
     constructor(props)
@@ -43,9 +36,9 @@ class Game extends Component {
         })
 
         this.props.socket.on('botHaveChosen', (choice) => {
-            if(choice === 0) choice = _.Pierre
-            if(choice === 1) choice = _.Feuille
-            if(choice === 2) choice = _.Ciseau
+            if(choice === 0) choice = gameChoices.Pierre
+            if(choice === 1) choice = gameChoices.Feuille
+            if(choice === 2) choice = gameChoices.Ciseau
             this.setState({
                 partnersChoice: choice
             })
@@ -68,16 +61,16 @@ class Game extends Component {
                partnersChoice: ''
            })
            console.log(`Mon choix : ${this.state.myChoice} ; Le choix de mon partenaire : ${this.state.partnersChoice}`)
-           const result = this.didIWinThisRound(this.state.myChoice, this.state.partnersChoice);
-           if(result === resultROund.Win)
+           const result = ConvertStats.didIWinThisRound(this.state.myChoice, this.state.partnersChoice);
+           if(result === resultRound.Win)
            {
                 this.setState((prevState) => ({myScore: prevState.myScore + 1}))
            }
-           else if(result === resultROund.Loose)
+           else if(result === resultRound.Loose)
            {
             this.setState((prevState) => ({scoresPartner: prevState.scoresPartner + 1}))
            }
-           else if(result === resultROund.MatchNull)
+           else if(result === resultRound.MatchNull)
            {
                // On n'ajoute aucun point.
            }
@@ -98,32 +91,6 @@ class Game extends Component {
        }
     }
 
-    didIWinThisRound(myChoice, partnersChoice) // Uniquement à appelé dans le if de componentDidUpdate
-    {
-        if(myChoice === partnersChoice)
-        {
-            console.log('match null')
-            return resultROund.MatchNull
-        }
-        else
-        {
-            if (myChoice === _.Pierre)
-            {
-                if(partnersChoice === _.Ciseau) return resultROund.Win
-                if(partnersChoice === _.Feuille) return resultROund.Loose
-            }
-            else if(myChoice === _.Feuille)
-            {
-                if(partnersChoice === _.Pierre) return resultROund.Win
-                if(partnersChoice === _.Ciseau) return resultROund.Loose
-            }
-            else if(myChoice === _.Ciseau)
-            {
-                if(partnersChoice === _.Feuille) return resultROund.Win
-                if(partnersChoice === _.Pierre) return resultROund.Loose
-            }
-        }
-    }
 
     handleBtn(e)
     {
@@ -172,9 +139,9 @@ class Game extends Component {
                     </Col>
                     {this.state.myChoice === "" && this.props.partner || !this.props.partner ?
                         <Col>
-                            <Button value={_.Pierre} onClick={this.handleBtn.bind(this)} variant="dark">Pierre</Button>
-                            <Button value={_.Feuille}  onClick={this.handleBtn.bind(this)} variant="dark">Feuille</Button>
-                            <Button value={_.Ciseau}  onClick={this.handleBtn.bind(this)} variant="dark">Ciseau</Button>
+                            <Button value={gameChoices.Pierre} onClick={this.handleBtn.bind(this)} variant="dark">Pierre</Button>
+                            <Button value={gameChoices.Feuille}  onClick={this.handleBtn.bind(this)} variant="dark">Feuille</Button>
+                            <Button value={gameChoices.Ciseau}  onClick={this.handleBtn.bind(this)} variant="dark">Ciseau</Button>
                         </Col>
                         : <h2>En attente du coup adverse</h2>}
 
