@@ -1,7 +1,7 @@
 1. Avoir une version de Node.js à jour : https://nodejs.org/en/
 2. Ouvrir deux consoles : Une pour le client, une pour le serveur
 3. Dans la console pour le serveur :
-    * Se rendre dans le répertoire server
+    * Se rendre dans le répertoire SocketServer
     * Exécuter la commande : npm install
     * Exécuter la commande : npm run dev
     * Le serveur est maintenant lancé sur le port 8080
