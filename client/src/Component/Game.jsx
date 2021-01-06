@@ -45,7 +45,7 @@ class Game extends Component {
         })
 
         this.props.socket.on('stopGame', () => {
-            console.log("Ok game finished ! ")
+            console.log("Ok game finished ! " + this.props.userName)
             this.setState({
                 stopGame: true
             })
@@ -81,13 +81,21 @@ class Game extends Component {
            console.log('In fin partie')
            if(this.state.stopGame === false)
            {
-               this.props.socket.emit('gameFinished')
+               this.props.socket.emit('gameFinished', this.props.tournament)
            }
        }
 
        if(this.state.stopGame)
        {
-           this.props.socket.emit('closeRoom')
+           if(this.props.tournament)
+           {
+               let isWin = this.state.myScore === 3
+               this.props.socket.emit('nextRound', isWin)
+           }
+           else
+           {
+               this.props.socket.emit('closeRoom')
+           }
        }
     }
 
@@ -102,6 +110,8 @@ class Game extends Component {
         console.log(this.props.partner)
         if(this.props.partner !== false)
         {
+            console.log('In handleBtn whith partner ...')
+            console.log('value of this.props.partner : ', this.props.partner)
             this.props.socket.emit('haveChosen', this.props.partner, e.currentTarget.value)
         }
         else
@@ -163,6 +173,17 @@ class Game extends Component {
                     </Col>
                 </Row>
             </Container>
+        }
+        else if(this.props.tournament)
+        {
+            currentView = <React.Fragment>
+                <h1>Partie terminé</h1>
+                <Button onClick={(e) => {this.setState({
+                    stopGame: false,
+                    myScore: 0,
+                    scoresPartner: 0
+                })}}>Prochain match</Button>
+            </React.Fragment>
         }
         else
         {

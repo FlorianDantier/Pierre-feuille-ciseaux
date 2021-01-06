@@ -3,15 +3,14 @@ import {Socket} from "socket.io";
 class Room
 {
     private _capacity: number
-    private _isFree: boolean
     public _name: string // Unique
 
-    public constructor(readonly capacity: number, readonly name: string)
+    public constructor(readonly __capacity: number, readonly name: string)
     {
-        this._capacity = capacity
-        this._isFree = true
+        this._capacity = __capacity
         this._name = name
     }
+
 
     public add(socket: Socket): string | undefined
     {
@@ -21,11 +20,7 @@ class Room
             console.log('In capacity >  0')
 
             socket.join(this._name)
-            this._capacity -= 1
-            if(this._capacity === 0)
-            {
-                this._isFree = false
-            }
+            this._capacity --
             return this._name
         }
         else
@@ -43,7 +38,7 @@ class Room
         {
             socket.leave(this._name)
             this._capacity ++
-            console.log('leave room...')
+            console.log('leave room... ' + this._name)
             return true
         }
         else
@@ -53,8 +48,8 @@ class Room
 
     }
 
-    get isFree(): boolean {
-        return this._isFree;
+    public isFree(): boolean {
+        return this._capacity > 0
     }
 }
 

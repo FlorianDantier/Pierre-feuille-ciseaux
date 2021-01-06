@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Room {
-    constructor(capacity, name) {
-        this.capacity = capacity;
+    constructor(__capacity, name) {
+        this.__capacity = __capacity;
         this.name = name;
-        this._capacity = capacity;
-        this._isFree = true;
+        this._capacity = __capacity;
         this._name = name;
     }
     add(socket) {
@@ -13,10 +12,7 @@ class Room {
         if (this._capacity > 0) {
             console.log('In capacity >  0');
             socket.join(this._name);
-            this._capacity -= 1;
-            if (this._capacity === 0) {
-                this._isFree = false;
-            }
+            this._capacity--;
             return this._name;
         }
         else {
@@ -30,15 +26,15 @@ class Room {
         if (test !== []) {
             socket.leave(this._name);
             this._capacity++;
-            console.log('leave room...');
+            console.log('leave room... ' + this._name);
             return true;
         }
         else {
             return false;
         }
     }
-    get isFree() {
-        return this._isFree;
+    isFree() {
+        return this._capacity > 0;
     }
 }
 exports.default = Room;

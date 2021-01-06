@@ -7,7 +7,6 @@ import Col from "react-bootstrap/cjs/Col";
 import Menu from "./Component/Menu"
 import Stats from './Component/Stats'
 import Home from './Component/Home'
-
 import MenuChoices from './Enum/menuChoices'
 
 class App extends Component {
@@ -27,7 +26,8 @@ class App extends Component {
       viewReadyToPlay: false,
       stats: undefined,
       choice: undefined,
-      waitingPartnerChoice: false
+      waitingPartnerChoice: false,
+      isTournament: false
     }
   }
 
@@ -74,6 +74,14 @@ class App extends Component {
       this.setState({
         stats: s
       })
+    })
+
+    this.props.socket.on('MidStartTournament', () => {
+      console.log('in MidStartTournament')
+      this.setState({
+        isTournament: true
+      })
+      this.props.socket.emit('StartTournament')
     })
   }
 
@@ -148,9 +156,11 @@ class App extends Component {
           else // Dans ce cas là, on est dans l'état où l'on veut joueur contre un vrai joueur
           {
             currentView = <Game waitFunction={this.forGameWait.bind(this)}
+                                userName={this.state.userName}
                                 isWaiting={this.state.waitingPartnerChoice}
                                 socket={this.props.socket}
                                 partner={this.state.partner}
+                                tournament={this.state.isTournament}
                                 endGameFct={this.forEndGame.bind(this)}/>
           }
         }

@@ -13,7 +13,7 @@ class Connected extends Component
 
         this.state = {
             userAreWaiting: false,
-            stats: undefined
+            stats: undefined,
         }
     }
 
@@ -43,6 +43,27 @@ class Connected extends Component
         this.props.socket.emit('wantToPlayAgainstBot')
     }
 
+    handleJoinTournament(e)
+    {
+        e.preventDefault()
+        console.log('Want join tournament ...')
+        this.props.socket.emit('wantToJoinTournament')
+    }
+
+    handleSeeRoom(e)
+    {
+        e.preventDefault()
+        console.log('Presses see rooms')
+        this.props.socket.emit('seeRooms')
+    }
+
+    handleNextGame(e)
+    {
+        e.preventDefault()
+        console.log('Pressed Btn next game')
+        this.props.socket.emit('nextGame')
+    }
+
     render()
     {
             return <Container fluid>
@@ -59,6 +80,18 @@ class Connected extends Component
                 <Row className="justify-content-center text-center border-top-10">
                     <Col>
                         <Button onClick={this.handlePlayAgainstBot.bind(this)}>Jouer contre un bot</Button>
+                    </Col>
+                </Row>
+                <br/>
+                <Row className="justify-content-center text-center border-top-10">
+                    <Col>
+                        <Button onClick={this.handleJoinTournament.bind(this)}>Rejoindre un tournoi</Button>
+                    </Col>
+                </Row>
+                <br/>
+                <Row className="justify-content-center text-center border-top-10">
+                    <Col>
+                        <Button onClick={this.handleSeeRoom.bind(this)}>Voir les salons rejoint</Button>
                     </Col>
                 </Row>
             </Container>

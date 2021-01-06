@@ -22,7 +22,7 @@ export default  (socket: Socket | any, storeGame: Game[]) => async (room: string
                 idManche: storeGame.length,
                 idGame: lastIdGame !== undefined ? lastIdGame + 1 : storeGame[0].idGame
         }))
-        console.log('content of storegame : ', storeGame)
+        //console.log('content of storegame : ', storeGame)
         socket.to(room).emit('partnerHaveChosen', value)
 }
 

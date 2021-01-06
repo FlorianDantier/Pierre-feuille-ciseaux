@@ -31,6 +31,6 @@ exports.default = (socket, storeGame) => (room, value) => __awaiter(void 0, void
         idManche: storeGame.length,
         idGame: lastIdGame !== undefined ? lastIdGame + 1 : storeGame[0].idGame
     }));
-    console.log('content of storegame : ', storeGame);
+    //console.log('content of storegame : ', storeGame)
     socket.to(room).emit('partnerHaveChosen', value);
 });
