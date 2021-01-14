@@ -10,25 +10,11 @@ import wantToPlayAgainstBotController from "./controller/wantToPlayAgainstBotCon
 import playAgainstBotController from "./controller/playAgainstBotController"
 import Game from "./class/handleDataBase/Game"
 import gameFinishedController from "./controller/gameFinishedController"
-import connectDB from "./connectDB"
 import showStatsController from "./controller/showStatsController"
 import closeRoomController from "./closeRoomController"
-
-
-enum Choice
-{
-  Pierre,
-  Feuiile,
-  Ciseaux
-}
-
-enum Strategy
-{
-  Strat1,
-  Strat2,
-  Random
-}
-
+import wantToJoinTournamentController from "./controller/wantToJoinTournamentController";
+import startTournamentController from "./controller/startTournamentController";
+import nextRoundController from "./controller/nextRoundController";
 
 const io = socketio()
 
@@ -43,7 +29,7 @@ let LooseRoom = new SetOfRoom(1, 2, 'loose')
 
 
 io.on('connection', (socket: Socket | any) => {
-  let sg : Game[] = []
+  let sg : Game[] = [] // sg = store game
 
   console.log('A user has logged')
   socket.on('disconnect', disconnectController)
@@ -56,66 +42,11 @@ io.on('connection', (socket: Socket | any) => {
 
   socket.on('wantToPlay', wantToPlayController(UsersRoom, io, socket))
 
-  socket.on('seeRooms', () => {
-    console.log('Salon rejoint : ', Object.keys(socket.rooms))
-  })
+  socket.on('wantToJoinTournament', wantToJoinTournamentController(TournamentRoom, socket, io))
 
+  socket.on('StartTournament', startTournamentController(UserRoomForTournament, socket, io))
 
-  socket.on('wantToJoinTournament', () => {
-    console.log('In want to join tournament')
-    const currentRoom = TournamentRoom.add(socket)
-    console.log('Value\'s CurrentRoom : ',currentRoom)
-    if(currentRoom)
-    {
-      if(!TournamentRoom.getRoom(currentRoom).isFree())
-      {
-        io.to(currentRoom).emit('MidStartTournament')
-      }
-    }
-  })
-
-  socket.on('StartTournament', () => {
-    console.log('In start tournament ... ')
-    const currentRoom = UserRoomForTournament.add(socket)
-    if(currentRoom)
-    {
-      if(!UserRoomForTournament.getRoom(currentRoom).isFree())
-      {
-        io.to(currentRoom).emit('readyToPlay', currentRoom)
-      }
-    }
-  })
-
-  socket.on('nextRound', (isWin: boolean) => {
-    console.log('In nextRound event : ')
-    UserRoomForTournament.remove(socket)
-    socket.leave('UserRoomForTournament0')
-    console.log(socket.rooms)
-    if(isWin)
-    {
-       const currentRoom =  WinRoom.add(socket)
-        if(currentRoom)
-        {
-          if(!WinRoom.getRoom(currentRoom).isFree())
-          {
-            console.log('Dans win, ready to play emit ....')
-            io.to(currentRoom).emit('readyToPlay', currentRoom)
-          }
-        }
-    }
-    else
-    {
-      const currentRoom = LooseRoom.add(socket)
-      if(currentRoom)
-      {
-        if(!LooseRoom.getRoom(currentRoom).isFree())
-        {
-          console.log('Dans loose, ready to play emit ....')
-          io.to(currentRoom).emit('readyToPlay', currentRoom)
-        }
-      }
-    }
-  })
+  socket.on('nextRound', nextRoundController(UserRoomForTournament, WinRoom, LooseRoom, socket, io))
 
   socket.on('wantToPlayAgainstBot', wantToPlayAgainstBotController(BotsRoom, socket))
 

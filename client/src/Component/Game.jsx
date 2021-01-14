@@ -4,7 +4,7 @@ import Row from "react-bootstrap/cjs/Row"
 import Col from "react-bootstrap/cjs/Col"
 import Button from "react-bootstrap/cjs/Button"
 
-import ConvertStats from "../ConvertStats"
+import ConvertStats from "../Class/ConvertStats"
 import gameChoices from "../Enum/gameChoices"
 import resultRound from "../Enum/resultRound"
 
@@ -89,8 +89,8 @@ class Game extends Component {
        {
            if(this.props.tournament)
            {
-               let isWin = this.state.myScore === 3
-               this.props.socket.emit('nextRound', isWin)
+               // let isWin = this.state.myScore === 3
+               // this.props.socket.emit('nextRound', isWin)
            }
            else
            {
@@ -118,6 +118,18 @@ class Game extends Component {
         {
             this.props.socket.emit('PlayAgainstBot')
         }
+    }
+
+    handleNextGame(e)
+    {
+        e.preventDefault()
+        let isWin = this.state.myScore === 3
+        this.props.socket.emit('nextRound', isWin)
+        this.setState({
+            stopGame: false,
+            myScore: 0,
+            scoresPartner: 0
+        })
     }
 
     render()
@@ -178,11 +190,7 @@ class Game extends Component {
         {
             currentView = <React.Fragment>
                 <h1>Partie terminé</h1>
-                <Button onClick={(e) => {this.setState({
-                    stopGame: false,
-                    myScore: 0,
-                    scoresPartner: 0
-                })}}>Prochain match</Button>
+                <Button onClick={this.handleNextGame.bind(this)}>Prochain match</Button>
             </React.Fragment>
         }
         else

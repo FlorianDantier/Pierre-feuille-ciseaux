@@ -12,3 +12,7 @@
     * Le client est maintenant lancé sur le port 3000.
 5. Normalement une fenêtre s'est ouverte dans votre navigateur web à l'adresse : localhost:3000
     * Si ce n'est pas le cas ouvrez la manuellement en tapant dans la barre d'adresse : localhost:3000
+    
+NB: Si problème avec la commande pour le serveur, annulez là puis relancez là, 
+celà vient du fait que parfois node va chercher les fichier js
+compilé depuis les fichier ts avant que ces derniers aient été entièrement ajoutés.

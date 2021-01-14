@@ -5,9 +5,10 @@ import Container from "react-bootstrap/cjs/Container";
 import Row from "react-bootstrap/cjs/Row";
 import Col from "react-bootstrap/cjs/Col";
 import Menu from "./Component/Menu"
-import Stats from './Component/Stats'
+import Stats from './Component/Stats/Stats'
 import Home from './Component/Home'
 import MenuChoices from './Enum/menuChoices'
+import waitWhat from "./Enum/waitWhat";
 
 class App extends Component {
   constructor(props) {
@@ -23,11 +24,13 @@ class App extends Component {
       NoFreeRoom: false,
       viewStats: false,
       userAreWaiting: false,
+      waitTournament: false,
       viewReadyToPlay: false,
       stats: undefined,
       choice: undefined,
       waitingPartnerChoice: false,
-      isTournament: false
+      isTournament: false,
+
     }
   }
 
@@ -122,12 +125,25 @@ class App extends Component {
     this.setState({waitingPartnerChoice: valueBool})
   }
 
-  forConnected()
+  forConnected(mode)
   {
-    this.setState({
-      userAreWaiting: true
-    })
+    switch (mode)
+    {
+      case waitWhat.Partner :
+        this.setState({
+          userAreWaiting: true
+        })
+        break
+
+      case waitWhat.Tournament :
+        this.setState({
+          waitTournament: true
+        })
+        break
+    }
+
   }
+
   // 1 Page d'accueil
   // 2 Page connecté (non en attente d'un partenaire)
   // 3 Page connecté (en attente d'un partenaire)
@@ -174,6 +190,14 @@ class App extends Component {
               currentView = <Container className="h-100 bg-dark text-white" fluid>
                 <Row className="justify-content-center">
                   <h1>En attente d'un adversaire...</h1>
+                </Row>
+              </Container>
+            }
+            else if(this.state.waitTournament)
+            {
+              currentView = <Container className="h-100 bg-dark text-white" fluid>
+                <Row className="justify-content-center">
+                  <h1>En attente des adversaires...</h1>
                 </Row>
               </Container>
             }

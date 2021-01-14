@@ -3,6 +3,7 @@ import Button from "react-bootstrap/cjs/Button";
 import Container from "react-bootstrap/cjs/Container";
 import Row from "react-bootstrap/cjs/Row";
 import Col from "react-bootstrap/cjs/Col";
+import waitWhat from "../Enum/waitWhat";
 
 
 class Connected extends Component
@@ -32,7 +33,7 @@ class Connected extends Component
     {
         e.preventDefault()
         this.props.socket.emit('wantToPlay', this.props.user)
-        this.props.func()
+        this.props.func(waitWhat.Partner)
         console.log(this.props.user);
     }
 
@@ -48,6 +49,7 @@ class Connected extends Component
         e.preventDefault()
         console.log('Want join tournament ...')
         this.props.socket.emit('wantToJoinTournament')
+        this.props.func(waitWhat.Tournament)
     }
 
     handleSeeRoom(e)
@@ -86,12 +88,6 @@ class Connected extends Component
                 <Row className="justify-content-center text-center border-top-10">
                     <Col>
                         <Button onClick={this.handleJoinTournament.bind(this)}>Rejoindre un tournoi</Button>
-                    </Col>
-                </Row>
-                <br/>
-                <Row className="justify-content-center text-center border-top-10">
-                    <Col>
-                        <Button onClick={this.handleSeeRoom.bind(this)}>Voir les salons rejoint</Button>
                     </Col>
                 </Row>
             </Container>

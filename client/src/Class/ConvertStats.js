@@ -1,12 +1,13 @@
-import gameChoices from "./Enum/gameChoices"
-import resultRound from "./Enum/resultRound"
+import gameChoices from "../Enum/gameChoices"
+import resultRound from "../Enum/resultRound"
 
-class ConvertStats {
+class ConvertStats
+{
    static didIWinThisRound(myChoice, opponentChoice)
     {
         if(myChoice === opponentChoice)
         {
-            console.log('match null')
+            //console.log('match null')
             return resultRound.MatchNull
         }
         else
@@ -67,6 +68,7 @@ class ConvertStats {
                     opponent: e.user2,
                     myChoice: e.user1Choice,
                     opponentChoice: e.user2Choice,
+                    idManche: e.idManche,
                     idGame: e.idGame
                 }
             }
@@ -77,6 +79,7 @@ class ConvertStats {
                     opponent: e.user1,
                     myChoice: e.user2Choice,
                     opponentChoice: e.user1Choice,
+                    idManche: e.idManche,
                     idGame: e.idGame
                 }
             }
@@ -85,6 +88,21 @@ class ConvertStats {
                 return undefined
             }
         })
+    }
+
+    static convertStatsDetails(tabStats, user)
+    {
+        let newTabStats = ConvertStats.convertStats1(tabStats, user)
+        let idGames = newTabStats.map(e => e.idGame)
+        let maxIdGame = Math.max(...idGames)
+        let finalTab = []
+        for(let i = 0; i < maxIdGame; i++)
+        {
+            finalTab.push(newTabStats.filter(e => e.idGame === i))
+        }
+        console.log('Final tab in convertStatsDetails2 : ',finalTab.filter(e => e.length !== 0))
+        console.log(finalTab)
+        return finalTab.filter(e => e.length !== 0)
     }
 
     static convertStats2(tabStats, user)
@@ -99,14 +117,12 @@ class ConvertStats {
             if(i === 0)
             {
                 countBis += this.didIWinThisRound(s1[i].myChoice, s1[i].opponentChoice)
-                console.log('itéartion num : ', i, 'value of countBis : ', countBis)
             }
             else
             {
                 if(s1[i].idGame === s1[i - 1].idGame)
                 {
                     countBis += this.didIWinThisRound(s1[i].myChoice, s1[i].opponentChoice)
-                    console.log('itéartion num : ', i, 'value of countBis : ', countBis)
                 }
                 if(s1[i].idGame !== s1[i - 1].idGame || i === s1.length - 1)
                 {
