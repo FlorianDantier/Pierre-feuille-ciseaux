@@ -1,4 +1,4 @@
-# Site de jeu en ligne
+# Pierre feuille ciseaux
 Site web permettant de jouer à pierre feuille ciseaux en ligne.
 
 # Installation
